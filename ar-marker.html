@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Portafolio WebAR - MindAR</title>
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-extras/dist/aframe-extras.min.js"></script>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+      }
+
+      a-scene {
+        width: 100%;
+        height: 100%;
+      }
+
+      .ar-message {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        background: rgba(0, 0, 0, 0.75);
+        color: white;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        text-align: center;
+      }
+      .back-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 20;
+        background: rgba(0, 0, 0, 0.75);
+        color: white;
+        padding: 10px 14px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+      }
+      .a-enter-vr,
+      .a-enter-ar,
+      .a-orientation-modal,
+      .a-loader-title {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      }
+
+      #preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #050510;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: Arial, sans-serif;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+  }
+
+  #preloader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .loader-card {
+    width: min(86vw, 340px);
+    padding: 24px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    text-align: center;
+  }
+
+  .loader-spinner {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.18);
+    border-top-color: #00ff88;
+    animation: spin 0.9s linear infinite;
+  }
+
+  #loaderText {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .loader-subtext {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.4;
+  }
+
+  #arHint {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.72);
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    transition: opacity 0.3s ease;
+  }
+
+  .hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .a-enter-vr,
+  .a-enter-ar,
+  .a-orientation-modal,
+  .a-loader-title {
+    display: none !important;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+    </style>
+  </head>
+
+  <body>
+    <div id="preloader">
+  <div class="loader-card">
+    <div class="loader-spinner"></div>
+    <div id="loaderText">Cargando experiencia AR...</div>
+    <div class="loader-subtext">Prepara la imagen marcador mientras carga el modelo</div>
+  </div>
+</div>
+
+<div id="arHint" class="hidden">
+  Apunta la cámara a la imagen marcador
+</div>
+
+    <div id="message" class="ar-message">
+      Apunta la cámara hacia la imagen marcador
+    </div>
+
+    <a href="./index.html" class="back-button">
+  ← Volver al portafolio
+    </a>
+    <a-scene
+  id="scene"
+  mindar-image="
+    imageTargetSrc: https://lizgar.github.io/ImgDesignare/targets.mind;
+    autoStart: false;
+    filterMinCF: 0.0001;
+    filterBeta: 0.001;
+    warmupTolerance: 5;
+    missTolerance: 10;
+  "
+  color-space="sRGB"
+  renderer="colorManagement: true; physicallyCorrectLights: true;"
+  vr-mode-ui="enabled: false"
+  device-orientation-permission-ui="enabled: false"
+  embedded
+>
+  <a-assets id="assets" timeout="60000">
+    <a-asset-item id="modeloMew" src="./modelos/MewSleep.gltf"></a-asset-item>
+  </a-assets>
+
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+  <a-entity id="target" mindar-image-target="targetIndex: 0">
+    <a-gltf-model
+      id="modeloAnimado"
+      rotation="0 -60 0"
+      position="0 -0.5 0.2"
+      scale="0.023 0.023 0.023"
+      src="#modeloMew"
+      animation-mixer="clip: *; loop: repeat; timeScale: 0"
+    ></a-gltf-model>
+  </a-entity>
+</a-scene>
+
+   <script>
+  window.addEventListener("DOMContentLoaded", () => {
+    const scene = document.querySelector("#scene");
+    const assets = document.querySelector("#assets");
+    const preloader = document.querySelector("#preloader");
+    const loaderText = document.querySelector("#loaderText");
+    const arHint = document.querySelector("#arHint");
+    const message = document.querySelector("#message");
+    const target = document.querySelector("#target");
+    const modelo = document.querySelector("#modeloAnimado");
+
+    function setLoaderText(text) {
+      if (loaderText) loaderText.textContent = text;
+    }
+
+    function hidePreloader() {
+      if (preloader) preloader.classList.add("hidden");
+      if (arHint) arHint.classList.remove("hidden");
+    }
+
+    function waitForLoaded(element) {
+      return new Promise((resolve) => {
+        if (!element) {
+          resolve();
+          return;
+        }
+
+        if (element.hasLoaded) {
+          resolve();
+        } else {
+          element.addEventListener("loaded", resolve, { once: true });
+        }
+      });
+    }
+
+    async function startAR() {
+      try {
+        setLoaderText("Cargando modelo 3D...");
+
+        await waitForLoaded(scene);
+        await waitForLoaded(assets);
+
+        setLoaderText("Preparando cámara...");
+
+        const mindarSystem = scene.systems["mindar-image-system"];
+
+        if (!mindarSystem) {
+          setLoaderText("No se pudo iniciar MindAR.");
+          console.error("No se encontró mindar-image-system");
+          return;
+        }
+
+        await mindarSystem.start();
+
+        setLoaderText("Cámara lista.");
+
+        setTimeout(() => {
+          hidePreloader();
+        }, 600);
+      } catch (error) {
+        console.error(error);
+        setLoaderText("No se pudo iniciar la cámara. Revisa permisos o conexión.");
+      }
+    }
+
+    if (assets) {
+      assets.addEventListener("timeout", () => {
+        setLoaderText("La carga está tardando más de lo normal...");
+      });
+    }
+
+    if (target && modelo) {
+      target.addEventListener("targetFound", () => {
+        console.log("[MindAR] Imagen detectada");
+
+        if (message) message.textContent = "Imagen detectada";
+        if (arHint) arHint.textContent = "Imagen detectada";
+
+        modelo.setAttribute(
+          "animation-mixer",
+          "clip: *; loop: repeat; timeScale: 1"
+        );
+      });
+
+      target.addEventListener("targetLost", () => {
+        console.log("[MindAR] Imagen perdida");
+
+        if (message) message.textContent = "Apunta la cámara hacia la imagen marcador";
+        if (arHint) arHint.textContent = "Apunta la cámara a la imagen marcador";
+
+        modelo.setAttribute(
+          "animation-mixer",
+          "clip: *; loop: repeat; timeScale: 0"
+        );
+      });
+    }
+
+    startAR();
+  });
+</script>
+  </body>
+</html>
